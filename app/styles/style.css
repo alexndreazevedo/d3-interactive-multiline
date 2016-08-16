@@ -1,15 +1,14 @@
-body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  width: 960px;
-  height: 500px;
-  position: relative;
+.axis.x .tick line {
+  stroke: none;
 }
 
-svg {
-  width: 100%;
-  height: 100%;
+.axis.y .tick line {
+  stroke: #c6cbcb;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 
-text {
-  fill: #454545;
+.line {
+  stroke-width: 2px;
+  shape-rendering: geometricPrecision;
 }
