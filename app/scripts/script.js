@@ -1,7 +1,7 @@
 const width = 960;
-const height = 480;
+const height = 380;
 const margin = {
-  top: 100,
+  top: 20,
   left: 40,
   right: 20,
   bottom: 20,
@@ -54,7 +54,10 @@ const build = (data) => {
     .tickSizeOuter(0)
     .tickPadding(10)
     .tickArguments([8, "s"])
-    .tickFormat((d) => (d / 100) + '%');
+    .tickFormat((d) => {
+      const tick = (d / 100);
+      return (Math.sign(tick) > 0 ? '+' + tick : tick) + '%';
+    });
 
   const xAxis = d3.axisBottom(x)
     .tickSizeInner(-board.height)
@@ -67,6 +70,14 @@ const build = (data) => {
     .y((d) => y(d.value));
 
   const axes = svg.append('g');
+
+  axes.append('g')
+    .attr('class', 'title')
+    .attr('transform', `translate(${board.width / 2}, ${board.height})`)
+      .append('text')
+        .attr('dy', '1.35em')
+        .attr('text-anchor', 'middle')
+        .text('YTD Weekly Close');
 
   axes.append('g')
       .attr('class', 'x axis')

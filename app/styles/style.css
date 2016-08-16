@@ -1,6 +1,10 @@
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
 .axis.x .tick * {
-  stroke: none;
-  fill: none;
+  display: none;
 }
 
 .axis.x .domain,
