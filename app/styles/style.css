@@ -1,14 +1,27 @@
-.axis.x .tick line {
+.axis.x .tick * {
   stroke: none;
+  fill: none;
 }
 
+.axis.x .domain,
 .axis.y .tick line {
-  stroke: #c6cbcb;
   stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 
+.axis.x .domain {
+  stroke: #8d9697;
+}
+
+.axis.y .tick line {
+  stroke: #e3e5e5;
+}
+
+.axis.y .domain {
+  stroke: none;
+}
+
 .line {
-  stroke-width: 2px;
   shape-rendering: geometricPrecision;
+  cursor: pointer;
 }

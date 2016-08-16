@@ -1,10 +1,15 @@
 const width = 960;
 const height = 480;
-const margin = 20;
+const margin = {
+  top: 100,
+  left: 40,
+  right: 20,
+  bottom: 20,
+};
 const animation = 1000;
 const board = {
-  width: width - (margin * 2),
-  height: height - (margin * 2),
+  width: width - (margin.left + margin.right),
+  height: height - (margin.top + margin.bottom),
 };
 
 const svg = d3.select('body')
@@ -12,7 +17,8 @@ const svg = d3.select('body')
     .attr('viewBox', [0, 0, width, height].join(' '))
     .attr('width', width)
     .attr('height', height)
-  .append('g');
+  .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 const color = (d) => ['#eda921', '#4990e2', '#8d9697', '#edc8a3'][d];
 
@@ -33,23 +39,25 @@ const build = (data) => {
   }));
 
   const y = d3.scaleLinear()
-    .range([height - (margin * 2), 0])
+    .range([board.height, 0])
     .domain([
-      d3.min(data, d => Math.min.apply(null, d.items)),
-      d3.max(data, d => Math.max.apply(null, d.items)),
+      d3.min(data, d => Math.min.apply(null, d.items) * 1.2),
+      d3.max(data, d => Math.max.apply(null, d.items) * 1.2),
     ]);
 
   const x = d3.scaleTime()
-    .range([0, width])
+    .range([0, board.width])
     .domain(d3.extent(data, (d) => d.date));
 
   const yAxis = d3.axisLeft(y)
-    .tickSizeInner(-width)
+    .tickSizeInner(-board.width)
     .tickSizeOuter(0)
-    .tickPadding(10);
+    .tickPadding(10)
+    .tickArguments([8, "s"])
+    .tickFormat((d) => (d / 100) + '%');
 
   const xAxis = d3.axisBottom(x)
-    .tickSizeInner(-height)
+    .tickSizeInner(-board.height)
     .tickSizeOuter(0)
     .tickPadding(5);
 
@@ -62,7 +70,7 @@ const build = (data) => {
 
   axes.append('g')
       .attr('class', 'x axis')
-      .attr('transform', `translate( 0 , ${height} )`)
+      .attr('transform', `translate( 0 , ${board.height} )`)
       .call(xAxis);
 
   axes.append('g')
@@ -75,7 +83,7 @@ const build = (data) => {
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', 0)
-      .attr('height', height);
+      .attr('height', board.height);
 
   const lines = svg.append('g');
 
@@ -87,14 +95,28 @@ const build = (data) => {
       .attr('clip-path', 'url(#lines-clip)')
       .attr('fill', 'none')
       .attr('stroke', (d, i) => color(i))
-      .attr('stroke-width', '1px')
-      .attr('d', (d) => line(d));
+      .attr('stroke-width', '1.5px')
+      .attr('d', (d) => line(d))
+      .on('mouseover', function() {
+        d3.selectAll('.line')
+          .attr('stroke-width', '1.5px')
+          .attr('opacity', '.3');
+
+        d3.select(this)
+          .attr('stroke-width', '4.5px')
+          .attr('opacity', '1');
+      })
+      .on('mouseout', function() {
+        d3.selectAll('.line')
+          .attr('stroke-width', '1.5px')
+          .attr('opacity', '1');
+      });
 
   clip
     .transition().ease(d3.easeCubicOut).duration(animation)
     .attrTween('width', (d) => {
 
-      const interpolate = d3.interpolate(0, width);
+      const interpolate = d3.interpolate(0, board.width);
 
       return (t) => {
         return interpolate(t);
